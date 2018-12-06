@@ -43,6 +43,7 @@ public:
 	uchar* MemPool_malloc(size_t size);
 	uchar* MemPool_malloc_large(size_t size);
 	uchar* MemPool_malloc_small(MemPoolHeader_base* ptr, size_t size);
+	void MemPool_reset();
 private:
 	MemPoolHeader_ext* pool;
 };
