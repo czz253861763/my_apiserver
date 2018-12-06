@@ -1,0 +1,13 @@
+alloc in small mem2048
+alloc large mem:5120ok
+alloc large mem:5120ok
+alloc in small mem3072
+alloc in small mem3072
+create new mempool:3072ok
+alloc in small mem3072
+alloc in small mem3072
+create new mempool:3072ok
+alloc in small mem3072
+alloc in small mem3072
+alloc in small mem3072
+create new mempool:3072ok
