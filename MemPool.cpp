@@ -2,9 +2,10 @@
 
 namespace apiserver {
 
-MemPool::MemPool(size_t size)
+MemPool::MemPool(size_t size): init_size(size)
 {
 	pool = (MemPoolHeader_ext*)malloc(size + sizeof(MemPoolHeader_ext));
+	//init_size = size;
 	if(pool == nullptr)
 		std::cout << "malloc error" << std::endl;
 	pool->base.last = (uchar*)pool + sizeof(MemPoolHeader_ext);
@@ -13,7 +14,9 @@ MemPool::MemPool(size_t size)
 	//std::cout << std::hex << (unsigned long)pool->base.last << std::endl;
 	//std::cout << std::hex << (unsigned long)pool->base.end << std::endl;
 	pool->base.next = nullptr;
+	pool->base.failed_count = 0;
 	pool->large = nullptr;
+	pool->cleanup = nullptr;
 }
 
 uchar* MemPool::MemPool_malloc(size_t size)
@@ -113,7 +116,7 @@ uchar* MemPool::MemPool_malloc_small(MemPoolHeader_base* ptr, size_t size)
 	return res;
 }
 
-void MemPool::MemPool_reset()
+void MemPool::MemPool_reset(bool flag_destroy)
 {
 	//释放大内存
 	MemChunk_large* tmp_ptr = pool->large;
@@ -135,8 +138,10 @@ void MemPool::MemPool_reset()
 		tmp_ptr = tmp;
 	}
 
-	//释放内存池块，只留1个初始化内存块
+	//释放内存池块，只留1个初始化内存块，并复原指针
 	MemPoolHeader_base* tmp_ptr_small = (pool->base).next;
+	(pool->base).last = (uchar*)pool + sizeof(MemPoolHeader_ext);
+	(pool->base).end = (uchar*)pool + init_size + sizeof(MemPoolHeader_ext);
 	while(tmp_ptr_small)
 	{
 		MemPoolHeader_base* tmp = tmp_ptr_small->next;
@@ -144,6 +149,12 @@ void MemPool::MemPool_reset()
 		free(tmp_ptr_small);
 		std::cout << "free small mem:" << "ok" << std::endl;
 		tmp_ptr_small = tmp;
+	}
+	if(flag_destroy == true)
+	{
+		free(pool);
+		pool = nullptr;
+		std::cout << "destroy mempool ok" << std::endl;
 	}
 }
 
