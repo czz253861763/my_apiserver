@@ -1,8 +1,10 @@
 #include "MemPool.h"
+#include "Log.h"
 #include <unistd.h>
 
 int main(int argc, char** argv)
 {
+	/*
 	int i = 0;
 	apiserver::MemPool mempool(7 * 1024);
 
@@ -24,5 +26,10 @@ int main(int argc, char** argv)
 	mempool.MemPool_reset();
 	std::cout << "mempool reset ok" << std::endl;
 	usleep(30 * 1000 * 1000);
+	*/
+
+	apiserver::Log log("./log.txt");
+	log << "test" << std::endl;
+
 	return 0;
 }

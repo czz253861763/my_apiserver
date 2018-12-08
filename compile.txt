@@ -1,0 +1,21 @@
+In file included from ./server.cpp:2:0:
+./Log.h:11:13: error: expected ‘)’ before ‘log_file_name’
+  Log(string log_file_name);
+             ^
+./Log.h:13:2: error: ‘ostream’ does not name a type
+  ostream& operator<<(ostream&, Log&);
+  ^
+./Log.h:16:2: error: ‘ofstream’ does not name a type
+  ofstream log_file;
+  ^
+./Log.h:19:46: error: no matching function for call to ‘apiserver::Log::Log(const char [10])’
+ Log* Log::log_singleton = new Log("./log.txt");
+                                              ^
+./Log.h:8:7: note: candidate: constexpr apiserver::Log::Log()
+ class Log
+       ^
+./Log.h:8:7: note:   candidate expects 0 arguments, 1 provided
+./Log.h:8:7: note: candidate: constexpr apiserver::Log::Log(const apiserver::Log&)
+./Log.h:8:7: note:   no known conversion for argument 1 from ‘const char [10]’ to ‘const apiserver::Log&’
+./Log.h:8:7: note: candidate: constexpr apiserver::Log::Log(apiserver::Log&&)
+./Log.h:8:7: note:   no known conversion for argument 1 from ‘const char [10]’ to ‘apiserver::Log&&’
