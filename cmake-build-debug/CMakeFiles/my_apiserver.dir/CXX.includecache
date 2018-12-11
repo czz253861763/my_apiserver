@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/Log.cpp
+Log.h
+/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/Log.h
+time.h
+-
+sys/timeb.h
+-
+
+/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/Log.h
+fstream
+-
+iostream
+-
+string
+-
+
+/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/MemPool.h
+iostream
+-
+vector
+-
+unordered_map
+-
+
+/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/server.cpp
+MemPool.h
+/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/MemPool.h
+Log.h
+/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/Log.h
+unistd.h
+-
+

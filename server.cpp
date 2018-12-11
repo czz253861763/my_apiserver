@@ -27,9 +27,16 @@ int main(int argc, char** argv)
 	std::cout << "mempool reset ok" << std::endl;
 	usleep(30 * 1000 * 1000);
 	*/
+    const char* log_filename = "log.txt";
+	apiserver::Log log(log_filename);
+	apiserver::LogLevel  loglevel = apiserver::info;
+	const char* log_str = "write_log";
+    log.write_log(loglevel, log_str);
+	log.write_log(loglevel, log_str);
+	log.write_log(loglevel, log_str);
 
-	apiserver::Log log("./log.txt");
-	log << "test" << std::endl;
+	//LogInfo() << "test_str";
 
+	std::cout << "hello" << std::endl;
 	return 0;
 }

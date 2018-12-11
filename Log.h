@@ -6,12 +6,36 @@
 #include <string>
 
 namespace apiserver {
-//继承ofstream写文件类
-class Log: public std::ofstream
+
+enum LogLevel
+{
+	debug,
+	info,
+	error
+};
+
+inline const char* EnumToString(LogLevel loglevel)
+{
+    switch(loglevel)
+    {
+        case debug:
+            return "[DEBUG] ";
+        case info:
+            return "[INFO] ";
+        case error:
+            return "[ERROR] ";
+        default:
+            return "[NONE] ";
+    }
+}
+
+class Log
 {
 public:
-	explicit Log(std::string log_filename);
-	friend std::ofstream& operator<<(std::ofstream& ofstream, std::string log_str);
+	Log(const char* log_filename);
+	std::ofstream* write_log(LogLevel log_level, const char* log_str);
+private:
+	std::ofstream* ofstream;
 };
 
 }
