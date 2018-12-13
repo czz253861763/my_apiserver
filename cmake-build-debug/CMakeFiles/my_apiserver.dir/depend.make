@@ -7,7 +7,11 @@ CMakeFiles/my_apiserver.dir/Log.cpp.o: ../Log.h
 CMakeFiles/my_apiserver.dir/MemPool.cpp.o: ../MemPool.cpp
 CMakeFiles/my_apiserver.dir/MemPool.cpp.o: ../MemPool.h
 
-CMakeFiles/my_apiserver.dir/server.cpp.o: ../Log.h
-CMakeFiles/my_apiserver.dir/server.cpp.o: ../MemPool.h
+CMakeFiles/my_apiserver.dir/main.cpp.o: ../Log.h
+CMakeFiles/my_apiserver.dir/main.cpp.o: ../MemPool.h
+CMakeFiles/my_apiserver.dir/main.cpp.o: ../main.cpp
+CMakeFiles/my_apiserver.dir/main.cpp.o: ../server.h
+
 CMakeFiles/my_apiserver.dir/server.cpp.o: ../server.cpp
+CMakeFiles/my_apiserver.dir/server.cpp.o: ../server.h
 

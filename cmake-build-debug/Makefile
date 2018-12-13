@@ -177,6 +177,33 @@ MemPool.cpp.s:
 	$(MAKE) -f CMakeFiles/my_apiserver.dir/build.make CMakeFiles/my_apiserver.dir/MemPool.cpp.s
 .PHONY : MemPool.cpp.s
 
+main.o: main.cpp.o
+
+.PHONY : main.o
+
+# target to build an object file
+main.cpp.o:
+	$(MAKE) -f CMakeFiles/my_apiserver.dir/build.make CMakeFiles/my_apiserver.dir/main.cpp.o
+.PHONY : main.cpp.o
+
+main.i: main.cpp.i
+
+.PHONY : main.i
+
+# target to preprocess a source file
+main.cpp.i:
+	$(MAKE) -f CMakeFiles/my_apiserver.dir/build.make CMakeFiles/my_apiserver.dir/main.cpp.i
+.PHONY : main.cpp.i
+
+main.s: main.cpp.s
+
+.PHONY : main.s
+
+# target to generate assembly for a file
+main.cpp.s:
+	$(MAKE) -f CMakeFiles/my_apiserver.dir/build.make CMakeFiles/my_apiserver.dir/main.cpp.s
+.PHONY : main.cpp.s
+
 server.o: server.cpp.o
 
 .PHONY : server.o
@@ -219,6 +246,9 @@ help:
 	@echo "... MemPool.o"
 	@echo "... MemPool.i"
 	@echo "... MemPool.s"
+	@echo "... main.o"
+	@echo "... main.i"
+	@echo "... main.s"
 	@echo "... server.o"
 	@echo "... server.i"
 	@echo "... server.s"

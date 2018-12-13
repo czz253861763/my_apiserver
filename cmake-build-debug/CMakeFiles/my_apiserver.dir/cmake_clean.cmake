@@ -2,6 +2,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/my_apiserver.dir/Log.cpp.o"
   "CMakeFiles/my_apiserver.dir/MemPool.cpp.o"
   "CMakeFiles/my_apiserver.dir/server.cpp.o"
+  "CMakeFiles/my_apiserver.dir/main.cpp.o"
   "my_apiserver.pdb"
   "my_apiserver"
 )

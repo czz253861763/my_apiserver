@@ -5,6 +5,8 @@
 #include <iostream>
 #include <string>
 
+#define LogInfo() Log::getInstance().write_log(apiserver::info)
+
 namespace apiserver {
 
 enum LogLevel

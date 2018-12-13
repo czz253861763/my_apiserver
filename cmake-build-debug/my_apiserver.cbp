@@ -96,7 +96,13 @@
 		<Unit filename="/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/MemPool.h">
 			<Option target="my_apiserver"/>
 		</Unit>
+		<Unit filename="/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/main.cpp">
+			<Option target="my_apiserver"/>
+		</Unit>
 		<Unit filename="/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/server.cpp">
+			<Option target="my_apiserver"/>
+		</Unit>
+		<Unit filename="/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/server.h">
 			<Option target="my_apiserver"/>
 		</Unit>
 		<Unit filename="/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/CMakeLists.txt">

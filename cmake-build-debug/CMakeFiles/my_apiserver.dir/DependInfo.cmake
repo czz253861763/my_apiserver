@@ -6,6 +6,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_CHECK_CXX
   "/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/Log.cpp" "/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/cmake-build-debug/CMakeFiles/my_apiserver.dir/Log.cpp.o"
   "/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/MemPool.cpp" "/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/cmake-build-debug/CMakeFiles/my_apiserver.dir/MemPool.cpp.o"
+  "/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/main.cpp" "/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/cmake-build-debug/CMakeFiles/my_apiserver.dir/main.cpp.o"
   "/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/server.cpp" "/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/cmake-build-debug/CMakeFiles/my_apiserver.dir/server.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")

@@ -10,4 +10,6 @@ add_executable(my_apiserver
         Log.h
         MemPool.cpp
         MemPool.h
-        server.cpp)
+        server.cpp
+        server.h
+        main.cpp)
