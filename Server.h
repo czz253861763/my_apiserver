@@ -19,6 +19,8 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
+#include "ClientCallback.h"
+
 namespace apiserver {
 
 typedef int Socket;
@@ -28,6 +30,9 @@ public:
     Server(std::string port);//构造初始化
     ~Server();
     //bool create();
+    bool handleIncomingConnection();
+    bool setSocketNonblock(int fd);
+    bool setClientCallback(ClientCallback* clientcallback);
     int start();//启动服务端
     int stop();//停止服务端
 
@@ -40,6 +45,7 @@ private:
     std::string ip;
     std::string listen_port;
 
+    ClientCallback* clientcallback;
 };
 
 

@@ -50,7 +50,7 @@ struct MemPool_cleanup
 class MemPool
 {
 public:
-	MemPool(size_t size);
+	MemPool(size_t size = (4 * 1024));
 	uchar* MemPool_malloc(size_t size);
 	uchar* MemPool_malloc_large(size_t size);
 	uchar* MemPool_malloc_small(MemPoolHeader_base* ptr, size_t size);
