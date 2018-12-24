@@ -1,3 +1,0 @@
-/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/chenzhizhi/ubuntu_share/my_github/my_apiserver/cmake-build-debug/CMakeFiles/my_apiserver.dir
