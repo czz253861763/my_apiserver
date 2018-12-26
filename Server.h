@@ -18,6 +18,7 @@
 #include <string>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/ioctl.h> 
 
 #include "ClientCallback.h"
 
@@ -33,11 +34,12 @@ public:
     bool handleIncomingConnection();
     bool setSocketNonblock(int fd);
     bool setClientCallback(ClientCallback* clientcallback);
+    void handleRequest(int client_fd);
     int start();//启动服务端
     int stop();//停止服务端
 
 private:
-    int listen_fd;
+    int listen_fd;//监听socket也需要设置成非阻塞
     int epoll_fd;
     struct epoll_event event;
     struct epoll_event* events;

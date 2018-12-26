@@ -1,162 +1,52 @@
 #include "MemPool.h"
 
+#define DEFAULT_CHUNK_NUM 64
+
 namespace apiserver {
+//构造函数并不分配内存，使用时再分配
+MemPool::MemPool(uint64_t chunkSize): chunkSize(chunkSize), chunkHead(nullptr), curChunk(nullptr), chunksLeft(0) {}
 
-MemPool::MemPool(size_t size): init_size(size)
+bool MemPool::newChunk(uint64_t size)
 {
-	pool = (MemPoolHeader_ext*)malloc(size + sizeof(MemPoolHeader_ext));
-	//init_size = size;
-	if(pool == nullptr)
-		std::cout << "malloc error" << std::endl;
-	pool->base.last = (uchar*)pool + sizeof(MemPoolHeader_ext);
-	pool->base.end = (uchar*)pool + size + sizeof(MemPoolHeader_ext);
-	//std::cout << std::hex << (unsigned long)pool << std::endl;
-	//std::cout << std::hex << (unsigned long)pool->base.last << std::endl;
-	//std::cout << std::hex << (unsigned long)pool->base.end << std::endl;
-	pool->base.next = nullptr;
-	pool->base.failed_count = 0;
-	pool->large = nullptr;
-	pool->cleanup = nullptr;
-}
-
-uchar* MemPool::MemPool_malloc(size_t size)
-{
-	uchar* ptr = nullptr;
-	if(size > MAX_ALLOC_FROM_POOL)//在大内存链表中分配
+	if(curChunk == nullptr)
 	{
-		ptr = MemPool_malloc_large(size);
-	}
-	else//在内存池小内存中分配
-	{
-		MemPoolHeader_base* tmp_ptr = &(*pool).base;
-
-		uchar* res = nullptr;
-
-		while(tmp_ptr)
-		{
-			res = MemPool_malloc_small(tmp_ptr, size);
-			if(res != nullptr)
-				return res;
-			else
-			{
-				if(tmp_ptr->next != nullptr)
-				{
-					tmp_ptr = tmp_ptr->next;
-				}
-				else
-				{
-					tmp_ptr = nullptr;
-				}
-				//std::cout << "tmp_ptr" << (unsigned long)tmp_ptr << std::endl;
-			}
-		}
-
-		if(res == nullptr)//遍历所有内存池块内存均不足，创建新内存池块
-		{
-			//分配新的内存池块
-			MemPoolHeader_base* tmp_pool = (MemPoolHeader_base*)malloc(MAX_ALLOC_FROM_POOL + sizeof(MemPoolHeader_base));
-			tmp_pool->last = (uchar*)tmp_pool + sizeof(MemPoolHeader_base);
-			tmp_pool->end = (uchar*)tmp_pool + sizeof(MemPoolHeader_base) + MAX_ALLOC_FROM_POOL;
-			tmp_pool->next = nullptr;
-			std::cout << "create new mempool:" << size << "ok" << std::endl;
-			std::cout << "last:" << (unsigned long)(tmp_pool->last) << std::endl;
-			std::cout << "end:" << (unsigned long)(tmp_pool->end) << std::endl;
-			//加上当前内存池块
-			MemPoolHeader_base* tmp_ptr = &(*pool).base;
-			while(tmp_ptr->next != nullptr)
-			{
-				tmp_ptr = tmp_ptr->next;
-			}
-			tmp_ptr->next = tmp_pool;
-			res = MemPool_malloc_small(tmp_pool, size);
-			std::cout << "res:" << (unsigned long)res << std::endl;
-			return res;
-		}
-	}
-}
-
-uchar* MemPool::MemPool_malloc_large(size_t size)
-{
-	MemChunk_large* ptr = (MemChunk_large*)malloc(sizeof(MemChunk_large));
-	ptr->next = nullptr;
-	ptr->ptr = (uchar*)malloc(size);
-
-	MemChunk_large* tmp_ptr = pool->large;
-	//添加到大内存链表
-	if(pool->large == nullptr)
-	{
-		pool->large = ptr;
+		Chunk* newChunkHead = (Chunk*)malloc(sizeof(Chunk) * DEFAULT_CHUNK_NUM);
+		memset(newChunkHead, 0, sizeof(Chunk) * DEFAULT_CHUNK_NUM);
+		chunkHead = newChunkHead;
+		curChunk = newChunkHead;
+		curChunk->buffer = (uchar*)malloc(size);
+		curChunk->size = size;
+		curChunk->bufferSize = size;
+		chunksLeft = DEFAULT_CHUNK_NUM;
+		return true;
 	}
 	else
 	{
-		while(tmp_ptr->next != nullptr)
+		if(chunksLeft == 0)
 		{
-			tmp_ptr = tmp_ptr->next;
+			int chunknum = curChunk - chunkHead + 1;
+			Chunk* newChunkHead = (Chunk*)realloc(chunkHead, sizeof(Chunk) * (chunknum + DEFAULT_CHUNK_NUM));
+			memset(newChunkHead + chunknum, 0, sizeof(Chunk) * DEFAULT_CHUNK_NUM);
+			chunksLeft = DEFAULT_CHUNK_NUM;
+			chunkHead = newChunkHead;
+			curChunk = chunkHead + chunknum;
 		}
-		tmp_ptr->next = ptr;
-	}
-	std::cout << "alloc large mem:" << size << "ok" << std::endl;
-	return ptr->ptr;
-}
-//在当前的内存池块上分配size大小的小内存
-uchar* MemPool::MemPool_malloc_small(MemPoolHeader_base* ptr, size_t size)
-{
-	uchar* last = ptr->last;
-	uchar* end = ptr->end;
-	uchar* res = nullptr;
-	//std::cout << "size:" << size << "last:" << (unsigned long)last << "end:" << (unsigned long)end << std::endl;
-	//std::cout << "left:" << (size_t)(end - last) << std::endl;
-	if(size <= (size_t)(end - last))//当前内存池内存充足
-	{
-		res = last;
-		ptr->last = ptr->last + size;
-		std::cout << "alloc small mem:" << size << "ok" << std::endl;
-		//std::cout << "last:" << (unsigned long)last << std::endl;
-	}
-	return res;
-}
+		else
+			++curChunk;
 
-void MemPool::MemPool_reset(bool flag_destroy)
-{
-	//释放大内存
-	MemChunk_large* tmp_ptr = pool->large;
-	std::cout << "mempool reset:" << (unsigned long)tmp_ptr << std::endl;	
-	while(tmp_ptr)
-	{
-		free(tmp_ptr->ptr);
-		std::cout << "free large mem:" << "ok" << std::endl;
-		tmp_ptr->ptr = nullptr;
-		tmp_ptr = tmp_ptr->next;
-	}
-	tmp_ptr = pool->large;
-	while(tmp_ptr)
-	{
-		MemChunk_large* tmp = tmp_ptr->next;
-		pool->large = tmp;
-		free(tmp_ptr);
-		std::cout << "free MemChunk_large mem:" << "ok" << std::endl;
-		tmp_ptr = tmp;
+		--chunksLeft;
+
+		if(size > curChunk->bufferSize)
+		{
+			curChunk->buffer = (uchar*)realloc(curChunk->buffer, size);
+			curChunk->size = 0;
+			curChunk->bufferSize = size;
+		}
+		return true;
 	}
 
-	//释放内存池块，只留1个初始化内存块，并复原指针
-	MemPoolHeader_base* tmp_ptr_small = (pool->base).next;
-	(pool->base).last = (uchar*)pool + sizeof(MemPoolHeader_ext);
-	(pool->base).end = (uchar*)pool + init_size + sizeof(MemPoolHeader_ext);
-	while(tmp_ptr_small)
-	{
-		MemPoolHeader_base* tmp = tmp_ptr_small->next;
-		(pool->base).next = tmp;
-		free(tmp_ptr_small);
-		std::cout << "free small mem:" << "ok" << std::endl;
-		tmp_ptr_small = tmp;
-	}
-	if(flag_destroy == true)
-	{
-		free(pool);
-		pool = nullptr;
-		std::cout << "destroy mempool ok" << std::endl;
-	}
-}
 
+
+}
 
 }

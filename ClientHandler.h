@@ -1,12 +1,16 @@
 #ifndef CLIENTHANDLER
 #define CLIENTHANDLER
 
+#include <iostream>
 #include <string>
 //#include "HttpRequest.h"
 #include "MemPool.h"
 #include "ClientCallback.h"
 #include <sys/socket.h>
 #include <netdb.h>
+#include <unordered_map>
+
+#define INVALID (static_cast<uint64_t>(-1))
 
 namespace apiserver {
 
@@ -17,14 +21,14 @@ public:
 	ClientInfo();
 	~ClientInfo();
 	int client_fd;//client socket
-	std::string host;
-	std::string port;
+	char hoststr[NI_MAXHOST];//client host ip
+	char portstr[NI_MAXSERV];//client port
 	//HttpRequest request;
 	//HttpResponse response;
-	//uint64_t httpBodyRemaining;
-	//uint64_t httpBodyOffset;//保存接收到http消息体偏移
-	//MemPool* poolRequest;
-	//MemPool* poolResponse;
+	uint64_t httpBodyRemaining;
+	uint64_t httpBodyOffset;//保存接收到http消息体偏移
+	MemPool* poolRequest;
+	MemPool* poolResponse;
 };
 
 class ClientHandler: public ClientCallback

@@ -1,64 +1,55 @@
 #ifndef MEMPOOL
 #define MEMPOOL
 
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 #include <iostream>
-#include <vector>
-#include <unordered_map>
 
 typedef unsigned char uchar;
-#define MAX_ALLOC_FROM_POOL (4*1024)//单个内存页大小4k
-typedef void (*pool_cleanup_ptr)(void* data);
+#define DEFAULT_MEM_SIZE (4 * 1024)//默认4k大小
 
 namespace apiserver {
 
-struct MemPoolHeader_base;
-struct MemPoolHeader_ext;
-struct MemChunk_large;
-struct MemPool_cleanup;
-
-//头部base
-struct MemPoolHeader_base
+struct Chunk
 {
-	uchar* last;
-	uchar* end;
-	MemPoolHeader_base* next;
-	unsigned short failed_count;
-};
-
-//头部ext
-struct MemPoolHeader_ext
-{
-	MemPoolHeader_base base;
-	MemChunk_large* large;
-	MemPool_cleanup* cleanup;//销毁内存池时调用的清理函数
-};
-
-//大内存块
-struct MemChunk_large
-{
-	uchar* ptr;
-	MemChunk_large* next;
-};
-
-struct MemPool_cleanup
-{
-	pool_cleanup_ptr handler;
-	void* data;
-	MemPool_cleanup* next;
+	uchar* buffer;
+	uint64_t bufferSize;//内存块总大小
+	uint64_t size;//内存块当前的大小
 };
 
 class MemPool
 {
 public:
-	MemPool(size_t size = (4 * 1024));
-	uchar* MemPool_malloc(size_t size);
-	uchar* MemPool_malloc_large(size_t size);
-	uchar* MemPool_malloc_small(MemPoolHeader_base* ptr, size_t size);
-	void MemPool_reset(bool flag_destroy = false);
+	MemPool(uint64_t chunkSize = DEFAULT_MEM_SIZE);
+	~MemPool();
+	bool newChunk(uint64_t newChunkSize);
+	//内联函数
+	inline uchar* grow(uint64_t growSize)
+	{
+		uint64_t offset = 0;
+		if(curChunk == nullptr || (curChunk->size + growSize) > curChunk->bufferSize)
+		{
+			offset = 0;
+			newChunk(growSize > chunkSize ? growSize : chunkSize);
+			curChunk->size = growSize;
+		}
+		else
+		{
+			//curChunk有足够空间
+			offset = curChunk->size;
+			curChunk->size += growSize;
+		}
+		return (curChunk->buffer + offset);
+	}
 private:
-	MemPoolHeader_ext* pool;
-	size_t init_size;
+	const uint64_t chunkSize;//保存默认初始化chunkSize大小
+	Chunk* chunkHead;//指向当前内存头
+	Chunk* curChunk;//指向最后一个已使用的内存块
+	int chunksLeft;
 };
+
 
 }
 
