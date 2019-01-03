@@ -41,9 +41,11 @@ public:
 			offset = curChunk->size;
 			curChunk->size += growSize;
 		}
+		
 		return (curChunk->buffer + offset);
 	}
-private:
+	bool shrink(uint64_t shrink_size);
+//private:
 	const uint64_t chunkSize;//保存默认初始化chunkSize大小
 	Chunk* chunkHead;//指向当前内存头
 	Chunk* curChunk;//指向最后一个已使用的内存块

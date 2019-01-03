@@ -44,8 +44,19 @@ bool MemPool::newChunk(uint64_t size)
 		}
 		return true;
 	}
+}
 
-
+bool MemPool::shrink(uint64_t shrink_size)
+{
+	if(curChunk != nullptr)
+	{
+		curChunk->size -= shrink_size;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 
 }
 

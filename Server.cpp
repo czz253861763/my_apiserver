@@ -109,8 +109,8 @@ int Server::start()
 				//建立新连接
 				bool res = handleIncomingConnection();
 			}
-			//else
-			//{
+			else
+			{
 				if(events[i].events & EPOLLIN)
 				{
 					printf("EPOLLIN\n");
@@ -126,7 +126,7 @@ int Server::start()
 				{
 					printf("UNKNOWN\n");
 				}
-			//}
+			}
 		}
 	}
 }
